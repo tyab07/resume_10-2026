@@ -1,155 +1,131 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { profile, stats } from '../data'
-import { Arrow, Download, Github, Linkedin, Spark } from './icons'
-import FloatingParticles from './FloatingParticles'
-import Grid3D from './Grid3D'
+import { onAnchorClick } from '../lib/scroll'
+
+const ease = [0.25, 1, 0.5, 1]
+const fade = (delay) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.8, delay, ease },
+})
+
+export function useLocalTime(timeZone) {
+  const fmt = () => new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone }).format(new Date())
+  const [time, setTime] = useState(fmt)
+  useEffect(() => {
+    const id = setInterval(() => setTime(fmt()), 20_000)
+    return () => clearInterval(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeZone])
+  return time
+}
+
+// Hand-drawn underline that draws itself in once.
+function Scribble({ children }) {
+  return (
+    <span className="scribble">
+      {children}
+      <svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden>
+        <motion.path
+          d="M2 8.5C40 3.5 92 2.5 132 4.5c22 1.1 44 3 66 5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.9, delay: 0.9, ease: 'easeInOut' }}
+        />
+      </svg>
+    </span>
+  )
+}
 
 export default function Hero() {
-  const photoContainerRef = useRef(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
-  // 3D Parallax tilt effect tracking mouse
-  useEffect(() => {
-    const handle = (e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2
-      const y = (e.clientY / window.innerHeight - 0.5) * 2
-      setMousePos({ x, y })
-    }
-    window.addEventListener('mousemove', handle, { passive: true })
-    return () => window.removeEventListener('mousemove', handle)
-  }, [])
+  const time = useLocalTime(profile.timezone)
 
   return (
-    <section id="home" className="relative isolate flex min-h-[94vh] items-center overflow-hidden pt-20 pb-32">
-      {/* 3D Perspective Grid floor */}
-      <Grid3D className="-z-20 opacity-35" />
-
-      {/* Floating particles background */}
-      <FloatingParticles count={28} className="-z-10" />
-
-      {/* Ambient 3D glow spheres */}
-      <div className="absolute -left-36 top-16 h-[540px] w-[540px] rounded-full bg-accent/[0.08] blur-[150px] animate-pulse-slow" aria-hidden />
-      <div className="absolute -right-36 bottom-8 h-[440px] w-[440px] rounded-full bg-accent-2/[0.09] blur-[130px] animate-pulse-slow" aria-hidden />
-      <div className="absolute left-1/2 top-1/4 h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-accent/[0.03] blur-[110px]" aria-hidden />
-
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 lg:grid-cols-[1.15fr_0.85fr]">
-        {/* Left — Text & Actions */}
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/[0.07] px-3.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-accent backdrop-blur-md shadow-[0_0_20px_var(--accent-glow)]">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            Open to AI & software internships
-          </div>
-
-          <h1 className="mt-7 text-[3.4rem] font-semibold leading-[0.9] tracking-[-0.05em] sm:text-[4.4rem] lg:text-[5rem] xl:text-[5.4rem]">
-            <span className="block">Muhammad</span>
-            <span className="block">
-              Tayyab<span className="text-accent text-glow">.</span>
-            </span>
-          </h1>
-
-          <p className="mt-4 font-serif text-[1.7rem] italic leading-none text-accent sm:text-[1.95rem]">
-            {profile.role}
+    <section id="home" className="pt-28 sm:pt-36">
+      <div className="mx-auto max-w-6xl px-5">
+        <motion.div {...fade(0)} className="flex flex-wrap items-center justify-between gap-3">
+          <p className="label">
+            {profile.role} — {profile.location}
           </p>
+          <a href="#contact" onClick={onAnchorClick} className="label inline-flex items-center gap-2 !text-fg">
+            <span className="h-2 w-2 rounded-full bg-ok" />
+            {profile.availability}
+          </a>
+        </motion.div>
 
-          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-muted sm:text-base">{profile.headline}</p>
+        <motion.h1
+          {...fade(0.08)}
+          className="mt-8 font-serif text-[clamp(3.6rem,12vw,9.5rem)] leading-[0.88] tracking-[-0.035em]"
+        >
+          Muhammad
+          <br />
+          Tayyab<span className="text-accent">.</span>
+        </motion.h1>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <a
-              href="#projects"
-              className="group inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-[13px] font-semibold text-bg transition-all hover:shadow-[0_0_24px_var(--accent-glow)] hover:brightness-110 active:scale-95"
-            >
-              View work
-              <Arrow width={15} height={15} className="transition-transform group-hover:translate-x-1" />
-            </a>
-            <a
-              href={profile.resume}
-              download
-              className="inline-flex items-center gap-2 rounded-lg border border-line bg-card/60 backdrop-blur-sm px-5 py-2.5 text-[13px] font-semibold text-fg transition hover:bg-card-hover hover:border-accent/30 active:scale-95"
-            >
-              <Download width={15} height={15} /> Resume
-            </a>
-            <div className="ml-1 flex items-center gap-2">
+        <div className="mt-12 grid gap-12 border-t border-line pt-10 md:grid-cols-12 md:gap-8">
+          <motion.div {...fade(0.18)} className="md:col-span-7">
+            <p className="font-serif text-[1.7rem] leading-[1.3] tracking-[-0.01em] sm:text-[2.1rem]">
+              I build AI features that do real work — and the <Scribble>backend services</Scribble> behind them.
+            </p>
+            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-muted">
+              Focused on LLM tool calling, retrieval-augmented generation and clean, well-tested APIs in Python and .NET.
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
               <a
-                href={profile.github}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="GitHub"
-                className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-card/40 text-muted transition hover:border-accent/40 hover:text-accent hover:shadow-[0_0_12px_var(--accent-glow)]"
+                href="#projects"
+                onClick={onAnchorClick}
+                className="group inline-flex h-12 items-center gap-3 rounded-md bg-fg px-6 text-[15px] font-medium text-bg transition-colors hover:bg-accent"
               >
-                <Github width={16} height={16} />
+                See selected work
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </a>
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="LinkedIn"
-                className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-card/40 text-muted transition hover:border-accent/40 hover:text-accent hover:shadow-[0_0_12px_var(--accent-glow)]"
-              >
-                <Linkedin width={16} height={16} />
+              <a href={profile.resume} download className="link text-[15px] font-medium">
+                Download résumé ↓
+              </a>
+              <a href={profile.github} target="_blank" rel="noreferrer" className="link text-[15px] font-medium">
+                GitHub ↗
+              </a>
+              <a href={profile.linkedin} target="_blank" rel="noreferrer" className="link text-[15px] font-medium">
+                LinkedIn ↗
               </a>
             </div>
-          </div>
+          </motion.div>
+
+          <motion.dl {...fade(0.26)} className="self-start text-[15px] md:col-span-4 md:col-start-9">
+            {profile.facts.map((f) => (
+              <div key={f.k} className="grid grid-cols-[96px_1fr] gap-4 border-b border-line py-3 first:pt-0">
+                <dt className="label pt-0.5">{f.k}</dt>
+                <dd>{f.v}</dd>
+              </div>
+            ))}
+            <div className="grid grid-cols-[96px_1fr] gap-4 py-3">
+              <dt className="label pt-0.5">Local time</dt>
+              <dd className="tabular-nums">
+                {time} <span className="text-muted">PKT · UTC+5</span>
+              </dd>
+            </div>
+          </motion.dl>
         </div>
 
-        {/* Right — 3D Holographic blended portrait with depth badges */}
-        <div className="relative mx-auto flex w-full max-w-xs items-center justify-center lg:max-w-sm">
-          {/* Animated 3D orbital rings */}
-          <div
-            className="absolute -inset-10 animate-spin-very-slow rounded-full border border-accent/[0.12] pointer-events-none"
-            aria-hidden
-          />
-          <div
-            className="absolute -inset-20 animate-spin-very-slow-reverse rounded-full border border-dashed border-accent-2/[0.1] pointer-events-none"
-            aria-hidden
-            style={{ animationDuration: '40s' }}
-          />
-
-          {/* Soft backlight bloom blending the portrait into background */}
-          <div
-            className="absolute inset-0 rounded-full bg-accent/[0.12] blur-[70px] scale-95 pointer-events-none"
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 rounded-full bg-accent-2/[0.08] blur-[90px] scale-110 translate-y-6 pointer-events-none"
-            aria-hidden
-          />
-
-          {/* Interactive 3D tilt stage */}
-          <div
-            ref={photoContainerRef}
-            className="relative z-10 flex flex-col items-center"
-            style={{
-              perspective: '1000px',
-              transform: `rotateY(${mousePos.x * 6}deg) rotateX(${mousePos.y * -4}deg)`,
-              transition: 'transform 0.15s ease-out',
-            }}
-          >
-            {/* 3D Pixar Coding Robot — cleanly blended without extra floating text */}
-            <img
-              src="/pixar-robot.png"
-              alt="Pixar Coding Robot"
-              className="photo-blend h-auto w-full max-w-[320px] sm:max-w-[360px] lg:max-w-[390px] object-contain select-none pointer-events-auto filter drop-shadow-[0_15px_35px_var(--accent-glow)] transition-all duration-300 hover:scale-[1.02]"
-              loading="eager"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 3D Glass Stats Strip at bottom */}
-      <div className="absolute inset-x-0 bottom-0 border-t border-line/60 bg-bg/75 backdrop-blur-xl">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 lg:grid-cols-4">
+        <motion.dl {...fade(0.34)} className="mt-16 grid grid-cols-2 border-t border-line lg:grid-cols-4">
           {stats.map((s, i) => (
             <div
               key={s.label}
-              className={`stat-item px-5 py-3 transition-colors hover:bg-card-hover/40 ${
-                i > 0 ? 'border-l border-line/50' : ''
-              }`}
+              className={`flex flex-col py-6 pr-4 ${i % 2 ? 'pl-5 border-l border-line' : ''} ${
+                i === 2 ? 'lg:border-l lg:pl-5' : ''
+              } ${i >= 2 ? 'border-t border-line lg:border-t-0' : ''}`}
             >
-              <p className="font-mono text-lg font-semibold leading-none text-accent text-glow">{s.value}</p>
-              <p className="mt-1 text-[10.5px] leading-snug text-muted">{s.label}</p>
+              <dt className="order-2 mt-2 text-sm leading-snug text-muted">{s.label}</dt>
+              <dd className="font-serif text-4xl tracking-tight sm:text-5xl">{s.value}</dd>
             </div>
           ))}
-        </div>
+        </motion.dl>
       </div>
     </section>
   )

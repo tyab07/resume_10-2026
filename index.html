@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -9,7 +9,7 @@
       name="description"
       content="Software Engineering student at FAST-NUCES building practical AI features, dependable backend services and reliable software. Explore selected work, expertise and experience."
     />
-    <meta name="theme-color" content="#05070a" />
+    <meta name="theme-color" content="#f3f0e8" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Muhammad Tayyab — Software Engineer" />
     <meta
@@ -17,6 +17,7 @@
       content="Practical AI features, dependable backend services, and software built to hold up in production."
     />
     <meta name="twitter:card" content="summary" />
+    <meta name="author" content="Muhammad Tayyab" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -33,7 +34,7 @@
         "alumniOf": "FAST-NUCES",
         "sameAs": [
           "https://github.com/tyab07",
-          "https://www.linkedin.com/in/muhammadtayyab-76b9923b1"
+          "https://www.linkedin.com/in/muhammad-tayyab-76b9923b1"
         ],
         "knowsAbout": [
           "Artificial intelligence",
@@ -49,15 +50,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap"
       rel="stylesheet"
     />
     <script>
-      // Apply saved / system theme before paint to avoid a flash.
+      // Apply the saved theme before paint to avoid a flash (light by default).
       try {
-        var t = localStorage.getItem('theme');
-        if (t !== 'light' && t !== 'dark') t = 'dark'; // dark-first; visitor's toggle choice is remembered
+        var t = localStorage.getItem('theme-v2');
+        if (t !== 'light' && t !== 'dark') t = 'light'; // visitor's toggle choice is remembered
         document.documentElement.setAttribute('data-theme', t);
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', t === 'dark' ? '#141413' : '#f3f0e8');
       } catch (e) {}
     </script>
   </head>

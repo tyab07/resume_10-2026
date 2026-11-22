@@ -13,10 +13,18 @@ export const profile = {
   phoneRaw: '923078453510',
   location: 'Faisalabad, Pakistan',
   github: 'https://github.com/tyab07',
-  linkedin: 'https://www.linkedin.com/in/muhammadtayyab-76b9923b1',
+  linkedin: 'https://www.linkedin.com/in/muhammad-tayyab-76b9923b1',
   // Replace with the direct URL of your LinkedIn post about the AI HRMS project.
-  hrmsPost: 'https://www.linkedin.com/in/muhammadtayyab-76b9923b1',
+  hrmsPost: 'https://www.linkedin.com/in/muhammad-tayyab-76b9923b1/recent-activity/all/',
   resume: '/Muhammad_Tayyab_Resume_2026.pdf',
+  timezone: 'Asia/Karachi',
+  availability: 'Open to software & AI internships',
+  // Short facts shown beside the intro in the hero
+  facts: [
+    { k: 'Currently', v: 'Teaching Assistant, Operating Systems — FAST-NUCES' },
+    { k: 'Previously', v: '.NET Developer — PrimeHRMS' },
+    { k: 'Studying', v: 'BS Software Engineering · Dean’s List' },
+  ],
 }
 
 export const nav = [
@@ -127,6 +135,14 @@ export const projects = [
       'Reuses the same business rules as the standard UI via Clean Architecture.',
     ],
     pipeline: ['Prompt', 'Intent', 'Tool call', 'Validation', 'Action'],
+    // Illustrative session shown in the project's preview window
+    demo: [
+      { t: 'in', v: 'Apply annual leave for me from Monday to Wednesday' },
+      { t: 'step', v: 'intent → leave.request' },
+      { t: 'step', v: 'tool_call create_leave_request(type: "annual", days: 3)' },
+      { t: 'step', v: 'validate balance · overlaps · policy rules' },
+      { t: 'ok', v: 'Leave request created and sent for approval' },
+    ],
     tags: ['LLM Tool Calling', 'Clean Architecture', '.NET'],
     links: [
       { label: 'Source', href: 'https://github.com/tyab07/HRMS-CleanArchitecture', type: 'github' },
@@ -146,6 +162,13 @@ export const projects = [
       'Python + ChromaDB backend with a modular React frontend.',
     ],
     pipeline: ['Documents', 'Embeddings', 'Retrieval', 'Answer'],
+    demo: [
+      { t: 'in', v: 'What are the admission requirements for BS Software Engineering?' },
+      { t: 'step', v: 'embed query → vector' },
+      { t: 'step', v: 'chromadb.query(top_k: 4) · semantic search' },
+      { t: 'step', v: 'compose answer from retrieved context' },
+      { t: 'ok', v: 'Answer grounded in the curated knowledge base' },
+    ],
     tags: ['RAG', 'LangChain', 'ChromaDB', 'Python', 'React', 'Firebase'],
     links: [
       { label: 'Frontend', href: 'https://github.com/tyab07/Fast_RAGger', type: 'github' },
@@ -191,10 +214,11 @@ export const projects = [
     title: 'Blood Donor Website',
     subtitle: 'Donor discovery web app',
     period: '2026',
-    description: 'A responsive Vite web app connecting blood donors with people in need, deployed on Vercel.',
+    description: 'A responsive Vite web app connecting blood donors with people in need.',
     tags: ['Vite', 'JavaScript', 'Vercel'],
     links: [
-      { label: 'Live', href: 'https://blooddonor-nine.vercel.app', type: 'live' },
+      // Vercel deployment is currently down (DEPLOYMENT_NOT_FOUND) — re-add once redeployed:
+      // { label: 'Live', href: 'https://blooddonor-nine.vercel.app', type: 'live' },
       { label: 'Source', href: 'https://github.com/tyab07/Blood_Donor_Website', type: 'github' },
     ],
   },

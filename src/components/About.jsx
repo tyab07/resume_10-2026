@@ -1,79 +1,74 @@
 import { about, achievements, education } from '../data'
 import Reveal from './Reveal'
-import SectionHeading from './SectionHeading'
-import TiltCard from './TiltCard'
-import { Check } from './icons'
+import Section from './Section'
 
 export default function About() {
   return (
-    <section id="about" className="relative py-16 overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute right-0 top-20 h-[300px] w-[300px] rounded-full bg-accent-2/[0.04] blur-[100px]" aria-hidden />
+    <Section
+      id="about"
+      index="01"
+      label="About"
+      title={
+        <>
+          An engineer with an <em className="text-accent">AI focus</em>.
+        </>
+      }
+      intro="Equal parts AI and backend — I care about what happens after the demo: correctness, evaluation and maintainability."
+    >
+      <div className="grid gap-12 md:grid-cols-12 md:gap-8">
+        <Reveal className="space-y-5 text-[18px] leading-[1.7] md:col-span-6 md:col-start-4">
+          {about.paragraphs.map((p, i) => (
+            <p key={p} className={i === 0 ? 'font-serif text-[1.55rem] leading-[1.4] tracking-[-0.005em]' : 'text-muted'}>
+              {p}
+            </p>
+          ))}
+        </Reveal>
 
-      <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          index="01"
-          eyebrow="About"
-          title={
-            <>
-              Engineer with an <em className="font-serif font-normal italic text-accent">AI focus</em>
-            </>
-          }
-        />
-
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <Reveal className="space-y-3 text-[14px] leading-relaxed text-muted">
-            {about.paragraphs.map((p) => (
-              <p key={p}>{p}</p>
+        <Reveal delay={80} className="md:col-span-3">
+          <p className="label">What I focus on</p>
+          <ol className="mt-4">
+            {about.highlights.map((h, i) => (
+              <li key={h.title} className="border-t border-line py-4">
+                <p className="flex items-baseline gap-2 font-medium">
+                  <span className="font-mono text-xs text-accent">0{i + 1}</span>
+                  {h.title}
+                </p>
+                <p className="mt-1 text-[15px] leading-snug text-muted">{h.text}</p>
+              </li>
             ))}
-
-            <div className="grid gap-2.5 pt-2 sm:grid-cols-3">
-              {about.highlights.map((h) => (
-                <TiltCard
-                  key={h.title}
-                  intensity={10}
-                  className="rounded-lg border border-line bg-card/50 p-3 transition-all hover:border-accent/30 hover:shadow-[0_4px_20px_var(--accent-glow)]"
-                >
-                  <p className="text-[12px] font-semibold text-fg">{h.title}</p>
-                  <p className="mt-1 text-[11px] leading-snug text-muted">{h.text}</p>
-                </TiltCard>
-              ))}
-            </div>
-          </Reveal>
-
-          <div className="space-y-4">
-            <Reveal delay={80}>
-              <TiltCard intensity={6} className="glass rounded-xl p-5">
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">Education</p>
-                <h3 className="mt-2 text-base font-semibold">{education.degree}</h3>
-                <p className="text-[12px] text-muted">{education.school}</p>
-                <p className="mt-0.5 font-mono text-[10px] text-muted">{education.period}</p>
-                <ul className="mt-3 space-y-1 text-[12px] text-fg/90">
-                  {education.notes.map((n) => (
-                    <li key={n} className="flex items-start gap-1.5">
-                      <Check width={13} height={13} className="mt-0.5 shrink-0 text-accent" /> {n}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 border-t border-line pt-2 text-[10px] text-muted">{education.prior}</p>
-              </TiltCard>
-            </Reveal>
-
-            <Reveal delay={140}>
-              <TiltCard intensity={6} className="glass rounded-xl p-5">
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent">Achievements</p>
-                <ul className="mt-3 space-y-2 text-[12px] text-fg/90">
-                  {achievements.map((a) => (
-                    <li key={a} className="flex items-start gap-1.5">
-                      <Check width={13} height={13} className="mt-0.5 shrink-0 text-accent" /> {a}
-                    </li>
-                  ))}
-                </ul>
-              </TiltCard>
-            </Reveal>
-          </div>
-        </div>
+          </ol>
+        </Reveal>
       </div>
-    </section>
+
+      <div className="mt-16 grid gap-px overflow-hidden rounded-md border border-line bg-line md:grid-cols-2">
+        <Reveal className="bg-bg p-6 sm:p-8">
+          <p className="label">Education</p>
+          <h3 className="mt-4 font-serif text-[1.75rem] leading-tight">{education.degree}</h3>
+          <p className="mt-1 text-muted">
+            {education.school} · <span className="tabular-nums">{education.period}</span>
+          </p>
+          <ul className="mt-5 space-y-2 text-[15px]">
+            {education.notes.map((n) => (
+              <li key={n} className="flex gap-3">
+                <span className="text-accent">—</span>
+                {n}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 border-t border-line pt-4 text-sm text-muted">{education.prior}</p>
+        </Reveal>
+        <Reveal delay={80} className="bg-bg p-6 sm:p-8">
+          <p className="label">Recognition</p>
+          <ol className="mt-4">
+            {achievements.map((a, i) => (
+              <li key={a} className="flex gap-4 border-b border-line py-4 last:border-b-0">
+                <span className="font-serif text-2xl leading-none text-accent">{i + 1}</span>
+                <span className="text-[16px] leading-snug">{a}</span>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+      </div>
+    </Section>
   )
 }

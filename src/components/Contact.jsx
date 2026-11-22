@@ -1,21 +1,26 @@
 import { useState } from 'react'
 import { profile } from '../data'
+import { copyText } from '../lib/copy'
 import Reveal from './Reveal'
-import SectionHeading from './SectionHeading'
-import TiltCard from './TiltCard'
-import { Arrow, Github, Linkedin, Mail, Phone, Pin } from './icons'
+import Section from './Section'
 
-const items = [
-  { icon: Mail, label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
-  { icon: Linkedin, label: 'LinkedIn', value: 'linkedin.com/in/muhammadtayyab', href: profile.linkedin },
-  { icon: Github, label: 'GitHub', value: 'github.com/tyab07', href: profile.github },
-  { icon: Phone, label: 'Phone / WhatsApp', value: profile.phone, href: `https://wa.me/${profile.phoneRaw}` },
-  { icon: Pin, label: 'Location', value: profile.location },
+const channels = [
+  { label: 'LinkedIn', value: 'in/muhammad-tayyab-76b9923b1', href: profile.linkedin },
+  { label: 'GitHub', value: 'github.com/tyab07', href: profile.github },
+  { label: 'WhatsApp', value: profile.phone, href: `https://wa.me/${profile.phoneRaw}` },
+  { label: 'Based in', value: profile.location },
 ]
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [copied, setCopied] = useState(false)
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+
+  const copy = async () => {
+    await copyText(profile.email, 'Email copied')
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1800)
+  }
 
   const submit = (e) => {
     e.preventDefault()
@@ -25,122 +30,93 @@ export default function Contact() {
   }
 
   const field =
-    'w-full rounded-lg border border-line bg-bg-soft/70 px-4 py-3 text-sm text-fg placeholder:text-muted/60 outline-none transition focus:border-accent focus:bg-bg-soft'
+    'w-full border-0 border-b border-line-strong bg-transparent px-0 py-3 text-[17px] text-fg placeholder:text-faint outline-none transition-colors focus:border-accent'
 
   return (
-    <section id="contact" className="relative py-16 overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute right-10 top-1/3 h-[380px] w-[380px] rounded-full bg-accent/[0.04] blur-[120px]" aria-hidden />
-
-      <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          index="05"
-          eyebrow="Contact"
-          title={
-            <>
-              Let’s build something <em className="font-serif font-normal italic text-accent">reliable</em>
-            </>
-          }
-          intro="I’m looking for internships in software engineering, AI applications and backend development. If that’s the kind of work you’re doing, I’d like to hear about it."
-        />
-
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-5">
-            <Reveal>
-              <TiltCard intensity={5} className="glass rounded-2xl p-6 sm:p-8">
-                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Direct channels</p>
-                <ul className="mt-4 divide-y divide-line border-t border-line">
-                  {items.map(({ icon: Icon, label, value, href }) => (
-                    <li key={label} className="flex items-center gap-4 py-3.5">
-                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line bg-bg-soft text-accent">
-                        <Icon width={16} height={16} />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted">{label}</p>
-                        {href ? (
-                          <a
-                            href={href}
-                            target={href.startsWith('http') ? '_blank' : undefined}
-                            rel="noreferrer"
-                            className="mt-0.5 block truncate text-sm font-medium transition hover:text-accent"
-                          >
-                            {value}
-                          </a>
-                        ) : (
-                          <p className="mt-0.5 text-sm font-medium">{value}</p>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </TiltCard>
-            </Reveal>
-
-            <Reveal delay={80}>
-              <TiltCard intensity={6} className="rounded-xl border border-line bg-bg-soft p-5">
-                <p className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Currently available
-                </p>
-                <p className="mt-2.5 text-sm leading-relaxed text-muted">
-                  Open to AI engineering internships for 2026. Based in Faisalabad, Pakistan — remote-friendly.
-                </p>
-              </TiltCard>
-            </Reveal>
+    <Section
+      id="contact"
+      index="05"
+      label="Contact"
+      title={
+        <>
+          Let’s build something <em className="text-accent">reliable</em>.
+        </>
+      }
+      intro="I’m looking for internships in software engineering, AI applications and backend development. If that’s the kind of work you do, I’d like to hear about it."
+    >
+      <div className="grid gap-14 md:grid-cols-12 md:gap-8">
+        <Reveal className="md:col-span-6 md:col-start-4 lg:col-span-5 lg:col-start-4">
+          <p className="label">Write to me</p>
+          <a
+            href={`mailto:${profile.email}`}
+            className="link mt-3 inline-block break-all font-serif text-[1.9rem] leading-tight sm:text-[2.4rem]"
+          >
+            {profile.email}
+          </a>
+          <div className="mt-3">
+            <button onClick={copy} className="font-mono text-[13px] text-muted transition-colors hover:text-accent">
+              {copied ? '✓ copied' : '[ copy address ]'}
+            </button>
           </div>
 
-          <Reveal delay={100}>
-            <TiltCard intensity={4} className="rounded-2xl border border-line bg-card p-6 sm:p-8">
-              <form onSubmit={submit}>
-                <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
-                  <p className="text-sm font-semibold">Send a message</p>
-                  <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">opens in email</span>
-                </div>
+          <dl className="mt-10 border-b border-line">
+            {channels.map((c) => (
+              <div key={c.label} className="grid grid-cols-[110px_1fr] gap-4 border-t border-line py-3.5">
+                <dt className="label pt-0.5">{c.label}</dt>
+                <dd className="text-[16px]">
+                  {c.href ? (
+                    <a href={c.href} target="_blank" rel="noreferrer" className="link">
+                      {c.value} ↗
+                    </a>
+                  ) : (
+                    c.value
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
 
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <label className="block">
-                    <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Your name</span>
-                    <input required className={field} placeholder="Jane Doe" value={form.name} onChange={set('name')} />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Your email</span>
-                    <input
-                      required
-                      type="email"
-                      className={field}
-                      placeholder="jane@company.com"
-                      value={form.email}
-                      onChange={set('email')}
-                    />
-                  </label>
-                </div>
-                <label className="mt-4 block">
-                  <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.14em] text-muted">Message</span>
-                  <textarea
-                    required
-                    rows={5}
-                    className={`${field} resize-none`}
-                    placeholder="Tell me about the role or project…"
-                    value={form.message}
-                    onChange={set('message')}
-                  />
-                </label>
-
-                <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                  <button
-                    type="submit"
-                    className="group inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-2.5 text-[13px] font-semibold text-bg transition-all hover:shadow-[0_0_16px_var(--accent-glow)] hover:brightness-110 active:scale-95"
-                  >
-                    Send message
-                    <Arrow width={16} height={16} className="transition-transform group-hover:translate-x-1" />
-                  </button>
-                  <p className="text-[11px] text-muted">This opens your email app with the message pre-filled.</p>
-                </div>
-              </form>
-            </TiltCard>
-          </Reveal>
-        </div>
+        <Reveal delay={80} className="md:col-span-9 md:col-start-4 lg:col-span-4 lg:col-start-9">
+          <form onSubmit={submit}>
+            <p className="label">Or leave a note</p>
+            <label className="mt-2 block">
+              <span className="sr-only">Your name</span>
+              <input required autoComplete="name" className={field} placeholder="Your name" value={form.name} onChange={set('name')} />
+            </label>
+            <label className="block">
+              <span className="sr-only">Your email</span>
+              <input
+                required
+                type="email"
+                autoComplete="email"
+                className={field}
+                placeholder="Your email"
+                value={form.email}
+                onChange={set('email')}
+              />
+            </label>
+            <label className="block">
+              <span className="sr-only">Message</span>
+              <textarea
+                required
+                rows={4}
+                className={`${field} resize-none`}
+                placeholder="What are you working on?"
+                value={form.message}
+                onChange={set('message')}
+              />
+            </label>
+            <button
+              type="submit"
+              className="group mt-8 inline-flex h-12 items-center gap-3 rounded-md bg-fg px-6 text-[15px] font-medium text-bg transition-colors hover:bg-accent"
+            >
+              Send message <span className="transition-transform group-hover:translate-x-1">→</span>
+            </button>
+            <p className="mt-3 text-[13px] text-faint">Opens your email app with the note pre-filled.</p>
+          </form>
+        </Reveal>
       </div>
-    </section>
+    </Section>
   )
 }
